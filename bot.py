@@ -1,6 +1,8 @@
 import logging
+
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
+
 from config import settings
 from src.handlers import register_handlers
 
@@ -16,11 +18,11 @@ dp = Dispatcher(storage=storage)
 register_handlers(dp)
 
 
-# Запуск бота
 async def main():
     await dp.start_polling(bot)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import asyncio
+
     asyncio.run(main())
