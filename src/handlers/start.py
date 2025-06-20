@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Dispatcher, F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -5,12 +7,14 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (InlineKeyboardButton, KeyboardButton,
                            ReplyKeyboardMarkup)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiohttp import ClientConnectorError, ContentTypeError
 
 from src.keyboards import messages
 from src.services.auth import user_login
 
 router = Router()
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # Состояния FSM
 class AuthState(StatesGroup):
@@ -83,11 +87,22 @@ async def process_phone(message: types.Message, state: FSMContext):
         reply_markup=types.ReplyKeyboardRemove(),  # Убираем клавиатуру
     )
 
-    response = await user_login(
-        telegram_user_id=str(message.from_user.id),
-        telegram_username=message.from_user.username,
-        phone=phone_number,
-    )
+    try:
+        response = await user_login(
+            telegram_user_id=str(message.from_user.id),
+            telegram_username=message.from_user.username,
+            phone=phone_number,
+        )
+    except (ClientConnectorError, ContentTypeError) as e:
+        await loading_message.delete()
+        await loading_sticker.delete()
+        await message.answer(
+            'Наш сервис сейчас немного прилёг отдохнуть — мы быстро чиним и перезагружаем,' 
+            ' чтобы всё снова работало как часы🤕',
+            reply_markup=types.ReplyKeyboardRemove(),  # Убираем клавиатуру
+        )
+        logger.error(f'Ошибка при отправке запроса или обработке ответа API: {e}')
+        return
 
     builder = InlineKeyboardBuilder()
     builder.add(
