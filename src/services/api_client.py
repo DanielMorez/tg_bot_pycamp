@@ -10,10 +10,12 @@ class APIClient:
 
     async def fetch_data(self, endpoint: str):
         async with aiohttp.ClientSession(auth=self.auth) as session:
-            async with session.get(f'{self.base_url}/{endpoint}') as response:
+            async with session.get(f"{self.base_url}/{endpoint}") as response:
                 return await response.json()
 
     async def post_data(self, endpoint: str, data: dict):
         async with aiohttp.ClientSession(auth=self.auth) as session:
-            async with session.post(f'{self.base_url}/{endpoint}', json=data) as response:
+            async with session.post(
+                f"{self.base_url}/{endpoint}", json=data
+            ) as response:
                 return await response.json()

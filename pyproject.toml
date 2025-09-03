@@ -1,49 +1,52 @@
-[tool.ruff]
+# Ruff configuration
+target-version = "py39"
+line-length = 88
+indent-width = 4
+
+[lint]
+# Enable pycodestyle (`E`), Pyflakes (`F`), isort (`I`), and other Ruff rules
+select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "ARG", "SIM", "TCH", "TID", "Q", "RUF"]
+ignore = [
+    "E501",  # line too long, handled by ruff formatter
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
 # Exclude a variety of commonly ignored directories.
 exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
     ".git",
     ".git-rewrite",
-    ".pyenv",
-    ".pytest_cache",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
     ".pytype",
     ".ruff_cache",
+    ".svn",
+    ".tox",
     ".venv",
-    ".vscode",
     "__pypackages__",
     "_build",
     "buck-out",
     "build",
     "dist",
     "node_modules",
-    "site-packages",
     "venv",
-    "migrations",
-    ".run",
-    "local",
-    "nginx",
-    "packages",
-    "static",
-    "staticfiles",
 ]
 
-line-length = 120
+# Same as Black.
+skip-magic-trailing-comma = false
+skip-sort-lines = false
 
-target-version = "py38"
+# Assume Python 3.9
+target-version = "py39"
 
-[tool.ruff.lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
-select = ["E4", "E7", "E9", "F"]
-ignore = []
-
-# Allow fix for all enabled rules (when `--fix`) is provided.
-fixable = ["ALL"]
-unfixable = []
-
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
-[tool.ruff.format]
-quote-style = "single"
-indent-style = "space"
-docstring-code-format = true
-docstring-code-line-length = 20
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
